@@ -9,6 +9,10 @@ public class Result<T> {
         return new Result<T>(data);
     }
 
+    public static Result<Boolean> success() {
+        return success(true);
+    }
+
     public static <T> Result<T> error(CodeMsg codeMsg) {
         return new Result(codeMsg);
     }
