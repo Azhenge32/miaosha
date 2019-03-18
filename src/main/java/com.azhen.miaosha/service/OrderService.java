@@ -4,6 +4,8 @@ import com.azhen.miaosha.dao.OrderDao;
 import com.azhen.miaosha.domain.MiaoshaOrder;
 import com.azhen.miaosha.domain.MiaoshaUser;
 import com.azhen.miaosha.domain.OrderInfo;
+import com.azhen.miaosha.redis.OrderKey;
+import com.azhen.miaosha.redis.RedisService;
 import com.azhen.miaosha.vo.GoodsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,8 +17,12 @@ import java.util.Date;
 public class OrderService {
     @Autowired
     OrderDao orderDao;
+    @Autowired
+    RedisService redisService;
+
     public MiaoshaOrder getMiaoshaOrderByUserIdGoodsId(long userId, long goodsId) {
-        return orderDao.getMiaoshaOrderByUserIdGoodsId(userId, goodsId);
+        // return orderDao.getMiaoshaOrderByUserIdGoodsId(userId, goodsId);
+        return redisService.get(OrderKey.getMiaoshaOrderByUidGid, "" + userId + "_" + goodsId, MiaoshaOrder.class);
     }
 
     @Transactional
@@ -37,7 +43,12 @@ public class OrderService {
         miaoshaOrder.setOrderId(orderInfo.getId());
         miaoshaOrder.setUserId(user.getId());
         orderDao.insertMiaoshaOrder(miaoshaOrder);
-
+        redisService.set(OrderKey.getMiaoshaOrderByUidGid, "" + user.getId() + "_" + goods.getId(), orderInfo);
+        /*try {
+            orderDao.insertMiaoshaOrder(miaoshaOrder);
+        } catch (DuplicateKeyException e) {
+            throw e;
+        }*/
         return orderInfo;
     }
 }
