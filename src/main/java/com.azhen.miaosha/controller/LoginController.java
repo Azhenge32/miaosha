@@ -1,12 +1,9 @@
 package com.azhen.miaosha.controller;
 
 import com.azhen.miaosha.redis.RedisService;
-import com.azhen.miaosha.result.CodeMsg;
 import com.azhen.miaosha.result.Result;
 import com.azhen.miaosha.service.MiaoshaUserService;
-import com.azhen.miaosha.util.ValidatorUtil;
 import com.azhen.miaosha.vo.LoginVo;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +33,9 @@ public class LoginController {
     
     @RequestMapping("/do_login")
     @ResponseBody
-    public Result<Boolean> doLogin(@Valid LoginVo loginVo) {
+    public Result<Boolean> doLogin(HttpServletResponse response, @Valid LoginVo loginVo) {
     	//登录
-    	userService.login(loginVo);
+    	userService.login(response, loginVo);
     	return Result.success();
     }
 }
