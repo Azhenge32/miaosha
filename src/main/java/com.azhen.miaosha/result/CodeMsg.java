@@ -10,6 +10,7 @@ public class CodeMsg {
     public static CodeMsg BIND_ERROR = new CodeMsg(500101, "参数校验异常：%s");
 
     // 登陆模块
+    public static CodeMsg SESSION_ERROR = new CodeMsg(500210, "Session不存在或者已经失效");
     public static CodeMsg MOBILE_ERROR = new CodeMsg(500201, "错误的手机号");
     public static CodeMsg PASSWORD_EMPTY = new CodeMsg(500202, "密码为空");
     public static CodeMsg MOBILE_EMPTY = new CodeMsg(500203, "手机号为空");
