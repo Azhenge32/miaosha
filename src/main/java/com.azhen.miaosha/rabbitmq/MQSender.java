@@ -1,6 +1,8 @@
 package com.azhen.miaosha.rabbitmq;
 
 import com.azhen.miaosha.redis.RedisService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MQSender {
+    private static final Logger log = LoggerFactory.getLogger(MQSender.class);
     @Autowired
     AmqpTemplate amqpTemplate;
 
@@ -37,4 +40,10 @@ public class MQSender {
 		Message obj = new Message(msg.getBytes(), properties);
 		amqpTemplate.convertAndSend(MQConfig.HEADERS_EXCHANGE, "", obj);
 	}
+
+    public void sendMiaoshaMessage(MiaoshaMessage mm) {
+        String msg = RedisService.beanToString(mm);
+        log.info("send: " + msg);
+        amqpTemplate.convertAndSend(MQConfig.MIAOSHA_QUEUE, msg);
+    }
 }

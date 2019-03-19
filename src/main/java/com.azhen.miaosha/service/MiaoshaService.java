@@ -19,7 +19,11 @@ public class MiaoshaService {
     public OrderInfo miaosha(MiaoshaUser user, GoodsVo goods) {
         //减库存 下订单 写入秒杀订单
         boolean success = goodsService.reduceStock(goods);
-        //order_info maiosha_order
-        return orderService.createOrder(user, goods);
+        if (success) {
+            //order_info maiosha_order
+            return orderService.createOrder(user, goods);
+        } else {
+            return null;
+        }
     }
 }
