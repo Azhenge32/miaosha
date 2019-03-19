@@ -1,6 +1,6 @@
 商品订单秒杀功能的实现与优化
 第一部分 项目框架搭建
-  1、Spring Boot环境搭建 <br>
+  1、Spring Boot环境搭建
   2、集成Thymeleaf,Result结果封装
   3、集成Mybatis+Druid
   4、集成Jedis+Redis安装+通用缓存封装
