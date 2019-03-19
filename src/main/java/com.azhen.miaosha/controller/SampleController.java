@@ -1,6 +1,7 @@
 package com.azhen.miaosha.controller;
 
 import com.azhen.miaosha.domain.User;
+import com.azhen.miaosha.rabbitmq.MQSender;
 import com.azhen.miaosha.redis.RedisService;
 import com.azhen.miaosha.redis.UserKey;
 import com.azhen.miaosha.result.Result;
@@ -18,6 +19,8 @@ public class SampleController {
     UserService userService;
     @Autowired
     RedisService redisService;
+    @Autowired
+    MQSender mqSender;
 
     @RequestMapping("/thymeleaf")
     public String thymeleaf(Model model) {
@@ -46,5 +49,12 @@ public class SampleController {
         user.setName("1111");
         redisService.set(UserKey.getById, ""+1, user);//UserKey:id1
         return Result.success(true);
+    }
+
+    @RequestMapping("/mq")
+    @ResponseBody
+    public Result<String> mq() {
+        mqSender.send("Hello,MQ");
+        return Result.success("success");
     }
 }
