@@ -1,6 +1,7 @@
 package com.azhen.miaosha.config;
 
 import com.alibaba.druid.util.StringUtils;
+import com.azhen.miaosha.access.UserContext;
 import com.azhen.miaosha.domain.MiaoshaUser;
 import com.azhen.miaosha.service.MiaoshaUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,29 +29,6 @@ public class UserArgumentsResolver implements HandlerMethodArgumentResolver {
 
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-        HttpServletResponse response = webRequest.getNativeResponse(HttpServletResponse.class);
-
-        String paramToken = request.getParameter(MiaoshaUserService.COOKI_NAME_TOKEN);
-        String cookieToken = getCookieValue(request, MiaoshaUserService.COOKI_NAME_TOKEN);
-        if(StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)) {
-            return null;
-        }
-        String token = StringUtils.isEmpty(paramToken)?cookieToken:paramToken;
-        return userService.getByToken(response, token);
+        return UserContext.getUser();
     }
-
-    private String getCookieValue(HttpServletRequest request, String cookiName) {
-        Cookie[]  cookies = request.getCookies();
-        if(cookies == null || cookies.length <= 0){
-            return null;
-        }
-        for(Cookie cookie : cookies) {
-            if(cookie.getName().equals(cookiName)) {
-                return cookie.getValue();
-            }
-        }
-        return null;
-    }
-
 }

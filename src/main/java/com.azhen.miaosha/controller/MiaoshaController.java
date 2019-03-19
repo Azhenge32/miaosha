@@ -1,5 +1,6 @@
 package com.azhen.miaosha.controller;
 
+import com.azhen.miaosha.access.AccessLimit;
 import com.azhen.miaosha.domain.MiaoshaOrder;
 import com.azhen.miaosha.domain.MiaoshaUser;
 import com.azhen.miaosha.rabbitmq.MQSender;
@@ -78,6 +79,7 @@ public class MiaoshaController implements InitializingBean {
      * @param goodsId
      * @return
      */
+    @AccessLimit(seconds = 5, maxCount = 100, needLogin = true)
     @RequestMapping(value = "/{path}/do_miaosha", method = RequestMethod.POST)
     @ResponseBody
     public Result<Integer> list(MiaoshaUser user,
@@ -152,6 +154,7 @@ public class MiaoshaController implements InitializingBean {
         return Result.success(result);
     }
 
+    @AccessLimit(seconds = 5, maxCount = 5, needLogin = true)
     @RequestMapping(value = "/path", method = RequestMethod.POST)
     @ResponseBody
     public Result<String> getMiaoshaPath(Model model, MiaoshaUser user,
