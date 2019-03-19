@@ -5,7 +5,6 @@ import com.azhen.miaosha.domain.MiaoshaUser;
 import com.azhen.miaosha.rabbitmq.MQSender;
 import com.azhen.miaosha.rabbitmq.MiaoshaMessage;
 import com.azhen.miaosha.redis.GoodsKey;
-import com.azhen.miaosha.redis.MiaoshaKey;
 import com.azhen.miaosha.redis.RedisService;
 import com.azhen.miaosha.result.CodeMsg;
 import com.azhen.miaosha.result.Result;
@@ -17,12 +16,9 @@ import com.azhen.miaosha.vo.GoodsVo;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -77,10 +73,19 @@ public class MiaoshaController implements InitializingBean {
      * @param goodsId
      * @return
      */
-    @RequestMapping(value = "/do_miaosha", method = RequestMethod.POST)
+    @RequestMapping(value = "/{path}/do_miaosha", method = RequestMethod.POST)
     @ResponseBody
     public Result<Integer> list(MiaoshaUser user,
-                                  @RequestParam("goodsId") long goodsId) {
+                                @RequestParam("goodsId") long goodsId,
+                                @PathVariable("path") String path) {
+        if (user == null) {
+            return Result.error(CodeMsg.SESSION_ERROR);
+        }
+        // 验证path
+        boolean valid=miaoshaService.checkPath(user,goodsId, path);
+        if (!valid){
+            return Result.error(CodeMsg.REQUEST_ILLEGAL);
+        }
         // 内存标记
         Boolean isOver = localOverMap.get(goodsId);
         if (isOver) {
@@ -140,5 +145,17 @@ public class MiaoshaController implements InitializingBean {
         }
         long result = miaoshaService.getMiaoshaResult(user.getId(), goodsId);
         return Result.success(result);
+    }
+
+    @RequestMapping(value = "/path", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<String> getMiaoshaPath(Model model, MiaoshaUser user,
+                                         @RequestParam("goodsId") long goodsId) {
+        model.addAttribute("user", user);
+        if (user == null) {
+            return Result.error(CodeMsg.SESSION_ERROR);
+        }
+        String path = miaoshaService.createMiaoshaPath(user, goodsId);
+        return Result.success(path);
     }
 }
