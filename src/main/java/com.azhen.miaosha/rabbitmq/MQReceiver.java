@@ -2,10 +2,7 @@ package com.azhen.miaosha.rabbitmq;
 
 import com.azhen.miaosha.domain.MiaoshaOrder;
 import com.azhen.miaosha.domain.MiaoshaUser;
-import com.azhen.miaosha.domain.OrderInfo;
 import com.azhen.miaosha.redis.RedisService;
-import com.azhen.miaosha.result.CodeMsg;
-import com.azhen.miaosha.result.Result;
 import com.azhen.miaosha.service.GoodsService;
 import com.azhen.miaosha.service.MiaoshaService;
 import com.azhen.miaosha.service.MiaoshaUserService;

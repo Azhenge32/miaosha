@@ -155,9 +155,9 @@ public class MiaoshaController implements InitializingBean {
     }
 
     @AccessLimit(seconds = 5, maxCount = 5, needLogin = true)
-    @RequestMapping(value = "/path", method = RequestMethod.POST)
+    @RequestMapping(value = "/path", method = RequestMethod.GET)
     @ResponseBody
-    public Result<String> getMiaoshaPath(Model model, MiaoshaUser user,
+    public Result<String> getMiaoshaPath(MiaoshaUser user,
                                          @RequestParam("goodsId") long goodsId,
                                                      @RequestParam(value="verifyCode", defaultValue="0") int verifyCode) {
         if (user == null) {
